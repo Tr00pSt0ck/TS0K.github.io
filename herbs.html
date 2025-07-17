@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbstock - Herb Inventory Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --secondary: #f5f9f5;
+            --accent: #ff9800;
+            --text: #333;
+            --text-light: #666;
+            --danger: #f44336;
+            --success: #4caf50;
+            --border: #c8e6c9;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --card-bg: #fff;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9f0, #e0f5e0);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+            margin-bottom: 20px;
+        }
+        
+            .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        margin-bottom: 10px;
+    }
+    
+    .home-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .home-btn:hover {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            background: var(--primary-light);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: var(--primary);
+
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--primary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 50px;
+            padding: 8px 20px;
+            box-shadow: 0 2px 8px var(--shadow);
+            width: 300px;
+        }
+        
+        .search-box input {
+            border: none;
+            padding: 8px 15px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+            background: transparent;
+        }
+        
+        .herb-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .herb-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--primary-light);
+        }
+        
+        .herb-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .herb-header {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0f2e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .herb-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .herb-icon {
+            color: var(--primary-light);
+            font-size: 1.4rem;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .herb-id {
+            background: var(--primary-light);
+            color: white;
+            font-size: 0.9rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        
+        .herb-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .herb-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.5;
+            flex-grow: 1;
+            font-size: 0.95rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .quantity-label {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 70px;
+            font-size: 0.9rem;
+        }
+        
+        .quantity-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--primary-dark);
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .actions {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .btn {
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-large {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            background: var(--primary-light);
+            color: white;
+            padding: 20px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .report-content {
+            margin-bottom: 30px;
+        }
+        
+        .report-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .report-list {
+            list-style: none;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .report-item {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+        }
+        
+        .report-item:last-child {
+            border-bottom: none;
+        }
+        
+        .report-item:nth-child(even) {
+            background: #f5f5f5;
+        }
+        
+        .report-herb {
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .report-quantity {
+            width: 100px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .quantity-zero {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        
+        .modal-footer {
+            padding: 0 25px 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-light);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: fadeInOut 3s ease;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        @media (max-width: 768px) {
+            .herb-list {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .herb-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .report-quantity {
+                text-align: left;
+                width: auto;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="top-nav">
+    <a href="index.html" class="home-btn">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+</div> 
+    <div class="container">
+        <header>
+            <h1>
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                Herbstock
+            </h1>
+            <p class="subtitle">Track and manage your herb inventory. Input quantities and generate reports.</p>
+        </header>
+        
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search herbs...">
+            </div>
+            <button class="btn" id="generateReport">
+                <i class="fas fa-file-alt"></i> Generate Report
+            </button>
+        </div>
+        
+        <div class="herb-list" id="herbList">
+            <!-- Herb cards will be generated by JavaScript -->
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-large" id="sendAllBtn">
+                <i class="fas fa-paper-plane"></i> Send Full Inventory Report
+            </button>
+        </div>
+        
+        <div class="modal" id="reportModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Herb Inventory Report</h3>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="report-content">
+                        <h4 class="report-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            Current Herb Stock
+                        </h4>
+                        <ul class="report-list" id="reportList">
+                            <!-- Report items will be generated here -->
+                        </ul>
+                    </div>
+                    
+                    <form class="email-form" id="emailForm">
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" class="form-input" id="email" placeholder="Enter recipient email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="subject">Subject</label>
+                            <input type="text" class="form-input" id="subject" value="Herb Inventory Report" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="message">Message</label>
+                            <textarea class="form-input" id="message" rows="4" placeholder="Add a message (optional)">Here is my current herb inventory:</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button class="btn" id="sendEmailBtn">
+                        <i class="fas fa-paper-plane"></i> Send Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="notification" id="notification">
+            <i class="fas fa-check-circle"></i> Opening email client...
+        </div>
+        
+        <footer>
+            <p>Troops Stocktake &copy; 2025 | All inventory systems in one place by O.G</p>
+        </footer>
+    </div>
+
+    <script>
+        // Updated herb data with icons
+        const herbs = [
+            { id: 1, name: "Mint", icon: "leaf", description: "Refreshing and cool, great for teas, desserts, and cocktails." },
+            { id: 2, name: "Basil", icon: "seedling", description: "Sweet and aromatic, perfect for pesto, Italian dishes, and salads." },
+            { id: 3, name: "Chives", icon: "wind", description: "Mild onion flavor, excellent for garnishing potatoes, soups, and dips." },
+            { id: 4, name: "Coriander", icon: "seedling", description: "Fresh citrusy flavor, essential for Mexican, Asian, and Indian cuisines." },
+            { id: 5, name: "Dill", icon: "wind", description: "Delicate and tangy, perfect for pickling, fish dishes, and salads." },
+            { id: 6, name: "Lovage", icon: "leaf", description: "Celery-like flavor with a hint of parsley, great for soups and stews." },
+            { id: 7, name: "Flat Parsley", icon: "leaf", description: "Mild and versatile, ideal for garnishing and Mediterranean dishes." },
+            { id: 8, name: "Sorrel", icon: "leaf", description: "Tangy lemon flavor, perfect for soups, sauces, and fresh salads." },
+            { id: 9, name: "Garlic", icon: "seedling", description: "Pungent and aromatic, fundamental in countless global cuisines." },
+            { id: 10, name: "Turmeric", icon: "seedling", description: "Earthy and warm, known for its vibrant color and health benefits." },
+            { id: 11, name: "Rosemary", icon: "seedling", description: "Woody and fragrant, excellent for roasted meats and potatoes." },
+            { id: 12, name: "Thyme", icon: "feather", description: "Subtle earthy flavor, pairs well with poultry, vegetables, and stews." },
+            { id: 13, name: "Sage", icon: "leaf", description: "Earthy and savory, ideal for stuffing, sausages, and rich sauces." },
+            { id: 14, name: "Tarragon", icon: "feather-pointed", description: "Anise-like flavor, perfect for chicken, fish, and creamy sauces." },
+            { id: 15, name: "Peeled Garlic 1KG", icon: "box", description: "Convenient pre-peeled garlic for bulk cooking and processing." },
+            { id: 16, name: "Edible Flowers", icon: "shopping-basket", description: "Colorful and flavorful, used to garnish salads, desserts, and drinks." },
+            { id: 17, name: "Micro Coriander", icon: "shopping-basket", description: "Tiny coriander leaves with intense flavor, perfect garnish." },
+            { id: 18, name: "Micro Red Amaranth", icon: "shopping-basket", description: "Vibrant microgreens with a mild, earthy taste and color pop." },
+            { id: 19, name: "Micro Fennel", icon: "shopping-basket", description: "Delicate fennel fronds with a light anise flavor." },
+            { id: 20, name: "Micro Garlic", icon: "shopping-basket", description: "Microgreen version of garlic with a mild garlicky essence." },
+            { id: 21, name: "Micro Lemon Balm", icon: "shopping-basket", description: "Small citrusy leaves perfect for desserts and teas." },
+            { id: 22, name: "Micro Red Vein Sorrel", icon: "shopping-basket", description: "Tangy microgreens with beautiful red veins and lemony taste." }
+        ];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            const herbList = document.getElementById('herbList');
+            const reportModal = document.getElementById('reportModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const generateReport = document.getElementById('generateReport');
+            const sendEmailBtn = document.getElementById('sendEmailBtn');
+            const sendAllBtn = document.getElementById('sendAllBtn');
+            const reportList = document.getElementById('reportList');
+            const emailForm = document.getElementById('emailForm');
+            const searchInput = document.getElementById('searchInput');
+            const notification = document.getElementById('notification');
+            
+            // Generate herb cards
+            function renderHerbList(herbsArray = herbs) {
+                herbList.innerHTML = '';
+                herbsArray.forEach(herb => {
+                    const herbCard = document.createElement('div');
+                    herbCard.className = 'herb-card';
+                    herbCard.innerHTML = `
+                        <div class="herb-header">
+                            <h3 class="herb-name">
+                                <i class="fas fa-${herb.icon} herb-icon"></i>
+                                ${herb.name}
+                            </h3>
+                            <div class="herb-id">ID: ${herb.id}</div>
+                        </div>
+                        <div class="herb-info">
+                            <p class="herb-description">${herb.description}</p>
+                            <div class="quantity-control">
+                                <span class="quantity-label">Amount:</span>
+                                <input type="number" min="0" class="quantity-input" id="herb-${herb.id}" placeholder="Enter amount 1 = 1Box">
+                            </div>
+                        </div>
+                    `;
+                    herbList.appendChild(herbCard);
+                });
+            }
+            
+            renderHerbList();
+            
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredHerbs = herbs.filter(herb => 
+                    herb.name.toLowerCase().includes(searchTerm) || 
+                    herb.description.toLowerCase().includes(searchTerm)
+                );
+                renderHerbList(filteredHerbs);
+            });
+            
+            // Show report modal
+            function showReport() {
+                // Clear previous report
+                reportList.innerHTML = '';
+                
+                // Generate report items
+                herbs.forEach(herb => {
+                    const input = document.getElementById(`herb-${herb.id}`);
+                    let quantity = 'N/A';
+                    let quantityClass = '';
+                    
+                    if (input.value.trim() !== '') {
+                        const value = parseInt(input.value);
+                        if (!isNaN(value)) {
+                            if (value === 0) {
+                                quantity = '0';
+                                quantityClass = 'quantity-zero';
+                            } else {
+                                quantity = value === 1 ? '1 box' : `${value} boxes`;
+                            }
+                        }
+                    }
+                    
+                    const reportItem = document.createElement('li');
+                    reportItem.className = 'report-item';
+                    reportItem.innerHTML = `
+                        <span class="report-herb">${herb.name}</span>
+                        <span class="report-quantity ${quantityClass}">${quantity}</span>
+                    `;
+                    reportList.appendChild(reportItem);
+                });
+                
+                reportModal.classList.add('show');
+            }
+            
+            generateReport.addEventListener('click', showReport);
+            sendAllBtn.addEventListener('click', showReport);
+            
+            // Close modal
+            const closeModalFunc = () => {
+                reportModal.classList.remove('show');
+            };
+            
+            closeModal.addEventListener('click', closeModalFunc);
+            cancelBtn.addEventListener('click', closeModalFunc);
+            
+            // Function to get formatted inventory list for email
+            function getInventoryList() {
+                let inventoryList = "";
+                
+                herbs.forEach(herb => {
+                    const input = document.getElementById(`herb-${herb.id}`);
+                    let quantity = 'N/A';
+                    
+                    if (input.value.trim() !== '') {
+                        const value = parseInt(input.value);
+                        if (!isNaN(value)) {
+                            quantity = value === 0 ? '0' : (value === 1 ? '1 box' : `${value} boxes`);
+                        }
+                    }
+                    
+                    inventoryList += `${herb.name}: ${quantity}\n`;
+                });
+                
+                return inventoryList;
+            }
+            
+            // Send email functionality
+            sendEmailBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (emailForm.checkValidity()) {
+                    const email = document.getElementById('email').value;
+                    const subject = document.getElementById('subject').value;
+                    const message = document.getElementById('message').value;
+                    const inventoryList = getInventoryList();
+                    
+                    // Prepare email content
+                    const emailBody = encodeURIComponent(
+                        `${message}\n\n` +
+                        "HERB INVENTORY REPORT:\n" +
+                        "========================\n\n" +
+                        inventoryList
+                    );
+                    
+                    // Create mailto link
+                    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${emailBody}`;
+                    
+                    // Show notification
+                    notification.classList.add('show');
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+                    
+                    // Open the email client
+                    window.location.href = mailtoLink;
+                    
+                    // Close the modal after a delay to allow the email client to open
+                    setTimeout(closeModalFunc, 500);
+                } else {
+                    alert('Please enter a valid email address');
+                }
+            });
+            
+            // Close modal if clicked outside content
+            reportModal.addEventListener('click', (e) => {
+                if (e.target === reportModal) {
+                    closeModalFunc();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
