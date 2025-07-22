@@ -3,517 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Troops Stocktake</title>
+    <title>index (Separated)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        :root {
-            --primary: #3498db;
-            --secondary: #2ecc71;
-            --accent: #e74c3c;
-            --dark: #f5f5f5;
-            --light: #2c3e50;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --disabled: #bdc3c7;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-            min-height: 100vh;
-            padding: 15px;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-        }
-        
-        /* Loading Overlay Styles */
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-        
-        .loading-content {
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-        
-        .loading-title {
-            color: #2c3e50;
-            font-size: 2.2rem;
-            margin-bottom: 40px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }        
-        .logo-container {
-            position: relative;
-            height: 150px;
-            margin-bottom: 40px;
-        }
-        
-        .logo {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            opacity: 0;
-            animation: logoFade 12s infinite;
-            background: var(--primary);
-        }
-        
-        @keyframes logoFade {
-            0%, 100% { opacity: 0; transform: translateX(-50%) scale(0.8); }
-            5% { opacity: 1; transform: translateX(-50%) scale(1.05); }
-            10% { opacity: 1; transform: translateX(-50%) scale(1); }
-            15% { opacity: 0; transform: translateX(-50%) scale(0.8); }
-        }
-        
-        .logo:nth-child(1) { animation-delay: 0s; background: linear-gradient(135deg, #4caf50, #1b5e20); }
-        .logo:nth-child(2) { animation-delay: 1.5s; background: linear-gradient(135deg, #ffd700, #fbc02d); }
-        .logo:nth-child(3) { animation-delay: 3s; background: linear-gradient(135deg, #e67e22, #d35400); }
-        .logo:nth-child(4) { animation-delay: 4.5s; background: linear-gradient(135deg, #dc143c, #a51c30); }
-        .logo:nth-child(5) { animation-delay: 6s; background: linear-gradient(135deg, #3498db, #2874a6); }
-        .logo:nth-child(6) { animation-delay: 7.5s; background: linear-gradient(135deg, #4caf50, #388e3c); }
-        .logo:nth-child(7) { animation-delay: 8s; background: linear-gradient(135deg, #8B4513, #654321); }
-        .logo:nth-child(8) { animation-delay: 9.5s; background: linear-gradient(135deg, #8BC34A, #689F38); }
-        .logo:nth-child(9) { animation-delay: 11s; background: linear-gradient(135deg, #e6c9a0, #b8864b); }
-        
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            border-radius: 4px;
-            transition: width 0.4s ease;
-        }
-        
-        .loading-text {
-            color: #666;
-            margin-top: 25px;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }        
-        /* Existing Styles Below */
-        header {
-            text-align: center;
-            padding: 15px 0 25px;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 8px;
-            position: relative;
-            display: inline-block;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        h1::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 2px;
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            color: #666;
-            max-width: 500px;
-            margin: 12px auto 0;
-            line-height: 1.5;
-        }
-        
-        .status-notice {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            margin: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            position: relative;
-            overflow: hidden;
-            top: -15px;
-        }
-        
-        .status-notice::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%);
-            z-index: 1;
-        }
-        
-        .status-notice h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .status-notice p {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .app-card {
-            background: linear-gradient(135deg, #ffffff, #f5f5f5);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            border: 2px solid rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        .app-card.disabled {
-            background: linear-gradient(135deg, #ecf0f1, #dfe6e9);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .app-card.disabled .app-icon {
-            filter: grayscale(100%);
-        }
-        
-        .app-card.disabled .app-name {
-            color: #7f8c8d;
-        }
-        
-        .app-card.disabled .app-tag {
-            background: #95a5a6;
-        }
-        
-        .app-card.disabled .app-hint {
-            color: #95a5a6;
-        }
-        
-        .app-card.disabled .watermark {
-            opacity: 0.1;
-        }
-        
-        .app-card:not(.disabled):hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            border-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        .app-card::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0,0,0,0.05) 0%, transparent 70%);
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-        }
-        
-        .app-card:not(.disabled):hover::before {
-            transform: rotate(45deg);
-            top: -30%;
-            left: -30%;
-        }
-        
-        .app-icon {
-            width: 65px;
-            height: 65px;
-            margin-bottom: 15px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        #herbStock .app-icon { background: linear-gradient(135deg, #4caf50, #1b5e20); }
-        #fruitStock .app-icon { background: linear-gradient(135deg, #e67e22, #d35400); }
-        #vegStock .app-icon { background: linear-gradient(135deg, #4caf50, #388e3c); }
-        #polStock .app-icon { background: linear-gradient(135deg, #dc143c, #a51c30); }
-        #dairyStock .app-icon { background: linear-gradient(135deg, #3498db, #2874a6); }
-        #eggStock .app-icon { background: linear-gradient(135deg, #ffd700, #fbc02d); }
-        #nutStock .app-icon { background: linear-gradient(135deg, #8B4513, #654321); }
-        #vegPrepStock .app-icon { background: linear-gradient(135deg, #8BC34A, #689F38); }
-        #BreadStock .app-icon { background: linear-gradient(135deg, #e6c9a0, #b8864b); }
+    
 
-        
-        .app-name {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .app-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            z-index: 3;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .app-hint {
-            position: absolute;
-            bottom: 10px;
-            color: rgba(0,0,0,0.6);
-            font-size: 0.8rem;
-            z-index: 2;
-            transition: all 0.3s ease;
-        }
-        
-        .app-card:not(.disabled):hover .app-hint {
-            color: #2c3e50;
-            transform: translateY(-3px);
-        }
-        
-        .disabled-hint {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 15px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-            border-radius: 12px;
-        }
-        
-        .app-card.disabled:hover .disabled-hint {
-            opacity: 1;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px 0 10px;
-            color: #666;
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            margin-top: 15px;
-            width: 100%;
-        }
-        
-        .watermark {
-            position: absolute;
-            font-size: 6rem;
-            opacity: 0.05;
-            z-index: 1;
-            pointer-events: none;
-            font-weight: 900;
-            color: #2c3e50;
-        }
-        
-        .app-card:nth-child(1) .watermark { content: "H"; top: 15px; right: 15px; }
-        .app-card:nth-child(2) .watermark { content: "V"; top: 15px; left: 15px; }
-        .app-card:nth-child(3) .watermark { content: "F"; bottom: 15px; right: 15px; }
-        .app-card:nth-child(4) .watermark { content: "P"; bottom: 15px; left: 15px; }
-        .app-card:nth-child(5) .watermark { content: "D"; top: 15px; right: 15px; }
-        .app-card:nth-child(6) .watermark { content: "VP"; top: 15px; left: 15px; }
-        .app-card:nth-child(7) .watermark { content: "E"; bottom: 15px; right: 15px; }
-        .app-card:nth-child(8) .watermark { content: "B"; bottom: 15px; left: 15px; }
-        .app-card:nth-child(9) .watermark { content: "N"; top: 15px; right: 15px; }
-
-        
-        @media (max-width: 600px) {
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                max-width: 100%;
-            }
-            
-            .app-card {
-                padding: 10px;
-            }
-            
-            .status-notice {
-                padding: 12px 20px;
-            }
-            
-            .status-notice h3 {
-                font-size: 1.1rem;
-            }
-            
-            .status-notice p {
-                font-size: 0.85rem;
-            }
-            
-            .app-icon {
-                width: 55px;
-                height: 55px;
-                font-size: 1.7rem;
-                margin-bottom: 10px;
-            }
-            
-            .app-name {
-                font-size: 1.1rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .app-tag {
-                font-size: 0.65rem;
-                padding: 3px 8px;
-            }
-            
-            .app-hint {
-                font-size: 0.75rem;
-            }
-            
-            .watermark {
-                font-size: 5rem;
-            }
-            
-            .disabled-hint {
-                font-size: 0.8rem;
-            }
-            
-            /* Loading adjustments for mobile */
-            .logo {
-                width: 80px;
-                height: 80px;
-                font-size: 2.5rem;
-            }
-            
-            .loading-title {
-                font-size: 1.8rem;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            .app-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            
-            .app-name {
-                font-size: 1rem;
-            }
-            
-            h1 {
-                font-size: 1.7rem;
-            }
-            
-            .watermark {
-                font-size: 4rem;
-            }
-            
-            .disabled-hint {
-                font-size: 0.7rem;
-            }
-            
-            /* Loading adjustments for small screens */
-            .logo {
-                width: 70px;
-                height: 70px;
-                font-size: 2rem;
-            }
-            
-            .loading-title {
-                font-size: 1.6rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -547,7 +40,7 @@
         
         <div class="status-notice">
             <h3><i class="fas fa-info-circle"></i> System Notice</h3>
-            <p>Only HerbStock is currently available. Other modules are undergoing maintenance.</p>
+            <p>Multiple modules are undergoing maintenance.</p>
         </div>
         
         <div class="dashboard-grid">
@@ -579,8 +72,10 @@
                     <i class="fas fa-apple-alt"></i>
                 </div>
                 <h2 class="app-name">FruitStock</h2>
+              <!--  <div class="app-hint">Click to open</div> -->
                 <div class="app-hint">Currently unavailable</div>
                 <div class="disabled-hint">Module under maintenance</div>
+
             </div>      
             
             <div class="app-card disabled" id="polStock">
@@ -590,52 +85,51 @@
                     <i class="fas fa-shopping-basket"></i>
                 </div>
                 <h2 class="app-name">PolStock</h2>
+              <!--  <div class="app-hint">Click to open</div> -->
                 <div class="app-hint">Currently unavailable</div>
                 <div class="disabled-hint">Module under maintenance</div>
             </div>
         
-            <div class="app-card disabled" id="dairyStock">
+            <div class="app-card" id="dairyStock">
                 <div class="watermark">D</div>
                 <div class="app-tag">Dairy</div>
                 <div class="app-icon">
                     <i class="fas fa-cheese"></i>
                 </div>
                 <h2 class="app-name">DairyStock</h2>
-                <div class="app-hint">Currently unavailable</div>
-                <div class="disabled-hint">Module under maintenance</div>
+                <div class="app-hint">Click to open</div>
             </div>
 
-            <div class="app-card disabled" id="vegPrepStock">
+            <div class="app-card disabled" id="PrepStock">
                 <div class="watermark">VP</div>
                 <div class="app-tag">Veg Prep</div>
                 <div class="app-icon">
                     <i class="fas fa-carrot"></i>
                 </div>
-                <h2 class="app-name">VegPrepStock</h2>
+                <h2 class="app-name">PrepStock</h2>
+              <!--  <div class="app-hint">Click to open</div> -->
                 <div class="app-hint">Currently unavailable</div>
                 <div class="disabled-hint">Module under maintenance</div>
             </div>
 
-            <div class="app-card disabled" id="eggStock">
+            <div class="app-card" id="eggStock">
                 <div class="watermark">E</div>
                 <div class="app-tag">Eggs</div>
                 <div class="app-icon">
                     <i class="fas fa-egg"></i>
                 </div>
                 <h2 class="app-name">EggStock</h2>
-                <div class="app-hint">Currently unavailable</div>
-                <div class="disabled-hint">Module under maintenance</div>
+                <div class="app-hint">Click to open</div>
             </div>
 
-            <div class="app-card disabled" id="BreadStock">
+            <div class="app-card" id="BreadStock">
                 <div class="watermark">B</div>
                 <div class="app-tag">Bread</div>
                 <div class="app-icon">
                     <i class="fas fa-bread-slice"></i>
                 </div>
                 <h2 class="app-name">BreadStock</h2>
-                <div class="app-hint">Currently unavailable</div>
-                <div class="disabled-hint">Module under maintenance</div>
+                <div class="app-hint">Click to open</div>
             </div>
 
             <div class="app-card disabled" id="nutStock">
@@ -645,6 +139,7 @@
                     <i class="fas fa-seedling"></i>
                 </div>
                 <h2 class="app-name">NutDFruitStock</h2>
+              <!--  <div class="app-hint">Click to open</div> -->
                 <div class="app-hint">Currently unavailable</div>
                 <div class="disabled-hint">Module under maintenance</div>
             </div>
@@ -655,104 +150,9 @@
         </footer>
     </div>
 
-    <script>
-        // Loading animation functionality
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const progressBar = document.getElementById('progress-bar');
-        const loadingText = document.querySelector('.loading-text');
-        const loadingMessages = [
-            "Loading inventory modules...",
-            "Connecting to database...",
-            "Verifying stock data...",
-            "Preparing dashboard...",
-            "Almost ready..."
-        ];
-        
-        let progress = 0;
-        let messageIndex = 0;
-        
-        // Update progress bar
-        const progressInterval = setInterval(() => {
-            progress += Math.random() * 5;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(progressInterval);
-            }
-            progressBar.style.width = progress + '%';
-        }, 155);
-        
-        // Update loading messages
-        const messageInterval = setInterval(() => {
-            if (messageIndex < loadingMessages.length) {
-                loadingText.textContent = loadingMessages[messageIndex];
-                messageIndex++;
-            } else {
-                clearInterval(messageInterval);
-            }
-        }, 1500);
-        
-        // Hide loading screen after delay
-        setTimeout(() => {
-            loadingOverlay.style.opacity = '0';
-            loadingOverlay.style.visibility = 'hidden';
-            document.body.style.overflow = 'auto';
-        }, 7000);
-        
-        // Function to open applications
-        function openApplication(url) {
-            window.location.href = url;
-        }
-        
-        // Only add event listener to herbStock
-        document.getElementById('herbStock').addEventListener('click', function() {
-            openApplication('herbs.html');
-        });
-        
-        // Add keyboard navigation - only herbStock is active
-        document.addEventListener('keydown', function(e) {
-            if (e.key === '1') document.getElementById('herbStock').click();
-        });
-        
-        // Disable click on other cards
-        const disabledCards = document.querySelectorAll('.app-card.disabled');
-        disabledCards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Show temporary warning
-                const warning = document.createElement('div');
-                warning.innerHTML = '<i class="fas fa-exclamation-circle"></i> This module is currently unavailable';
-                warning.style.position = 'fixed';
-                warning.style.bottom = '20px';
-                warning.style.left = '50%';
-                warning.style.transform = 'translateX(-50%)';
-                warning.style.backgroundColor = '#e74c3c';
-                warning.style.color = 'white';
-                warning.style.padding = '10px 20px';
-                warning.style.borderRadius = '8px';
-                warning.style.zIndex = '1000';
-                warning.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-                warning.style.fontWeight = 'bold';
-                warning.style.opacity = '0';
-                warning.style.transition = 'opacity 0.3s';
-                
-                document.body.appendChild(warning);
-                
-                // Fade in
-                setTimeout(() => {
-                    warning.style.opacity = '1';
-                }, 10);
-                
-                // Remove after 2 seconds
-                setTimeout(() => {
-                    warning.style.opacity = '0';
-                    setTimeout(() => {
-                        document.body.removeChild(warning);
-                    }, 300);
-                }, 2000);
-            });
-        });
-    </script>
+    
+
+    <script src="css-loader.js"></script>
+    <script src="js-loader.js"></script>
 </body>
 </html>
