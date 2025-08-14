@@ -2,7 +2,7 @@
   "name": "TroopStock",
   "short_name": "TS",
   "description": "Centralized inventory management WebApp for Troops by O.G",
-  "start_url": "/index.html",
+  "start_url": "https://tr00pst0ck.github.io/TS0K.github.io/index.html",
   "display": "fullscreen",
   "orientation": "portrait",
   "theme_color": "#787d97",
